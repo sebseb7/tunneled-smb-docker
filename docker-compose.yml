@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  smb-tunnel:
+    build: .
+    # image: ghcr.io/sebseb7/tunneled-smb-docker:latest  # Use this if pulling from registry
+    container_name: smb-tunnel
+    ports:
+      - "445:445"
+    volumes:
+      # Mount your SSH private key here
+      - ./ssh-key:/home/tunneluser/.ssh/id_rsa:ro
+    environment:
+      # Configure these environment variables
+      - SSH_HOST=your.remote.server.com
+      - SSH_USER=your_username
+      - SSH_PORT=22
+      - REMOTE_SMB_HOST=localhost
+      - REMOTE_SMB_PORT=445
+      - LOCAL_SMB_PORT=445
+      # Uncomment to customize SSH options
+      # - SSH_OPTIONS=-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ServerAliveInterval=60
+    restart: unless-stopped
+    # Run with additional capabilities if needed
+    # cap_add:
+    #   - NET_ADMIN
+    # Use host networking if you need to bind to privileged ports
+    # network_mode: host 
